@@ -20,7 +20,7 @@ public class GerenciamentoProdutos{
 		System.out.println("PRODUTOS DISPONÍVEIS");
 		int contador = 1;
 		for(Produto produto : this.produtos){
-			System.out.println("Item " + contador);
+			System.out.println("-   Item " + contador);
 			System.out.println(produto);
 			contador++;
 		}
