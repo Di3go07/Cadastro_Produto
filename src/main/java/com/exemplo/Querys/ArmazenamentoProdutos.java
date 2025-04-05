@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Scanner;
+import java.io.IOException;
 
 import com.exemplo.Model.Produto;
 import com.exemplo.Service.GerenciamentoProdutos;
@@ -50,7 +52,7 @@ public class ArmazenamentoProdutos{
 				insertedRows++;
 				System.out.println("Produto foi adicionado!");
 	                } else {
-     		   		System.out.println("Produto '" + i.getNome() + "' já existe no banco!");
+     		   		///System.out.println("Produto '" + i.getNome() + "' já existe no banco!");
     			}
 		}
 		conn.commit();
@@ -58,6 +60,7 @@ public class ArmazenamentoProdutos{
 	}
 
 	public void carregaEstoque(GerenciamentoProdutos gerencia) throws SQLException {
+		///Esse método entra em contato com o banco e adiciona todos os produtos na lista de gerenciamento
 		Connection conn = null;
                 conn = this.conectarAoBanco();
                 conn.setAutoCommit(false);
@@ -76,6 +79,7 @@ public class ArmazenamentoProdutos{
 	}
 
 	public void excluirProduto(int id) throws SQLException{
+		///Méotodo do CRUD para excluir o produto do banco
 		Connection conn = null;
                 conn = this.conectarAoBanco();
                 conn.setAutoCommit(false);
@@ -115,5 +119,51 @@ public class ArmazenamentoProdutos{
         		if (resetID != null) resetID.close();
 			if (conn != null) conn.close();
 		}
+	}
+
+	public void editarProduto(int id) throws SQLException{
+                Connection conn = null;
+                conn = this.conectarAoBanco();
+                conn.setAutoCommit(false);
+
+	    	Scanner sc = new Scanner(System.in);
+
+                try {
+			System.out.println("Novo nome: ");
+			String novoNome = sc.nextLine();
+                        System.out.println("Novo preço: ");
+			Double novoPreco = Double.parseDouble(sc.nextLine());
+                        System.out.println("Nova quantidade: ");
+			int novaQuantidade = Integer.parseInt(sc.nextLine());
+
+			PreparedStatement editarProduto = conn.prepareStatement("UPDATE produto SET nome=?, preco=?, quantidadeEstoque=? WHERE id=?");
+			editarProduto.setString(1, novoNome);
+			editarProduto.setDouble(2, novoPreco);
+			editarProduto.setInt(3, novaQuantidade);
+			editarProduto.setInt(4, id);
+			editarProduto.executeUpdate();
+			conn.commit();
+
+			System.out.println("Produto editado!");
+	                conn.close();
+
+		}catch (SQLException e) {
+			System.out.println("O ID não foi encontrado!Consute a lista de produtos para verificar o id do produto");
+                	if (conn != null) {
+           	 		conn.rollback();
+        		}
+		}
+	}
+	public void limparTerminal() {
+		try {
+        		if (System.getProperty("os.name").contains("Windows")) {
+            			new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        		} else {
+            			System.out.print("\033[H\033[2J");  // Código ANSI para limpar
+            			System.out.flush();
+        		}
+    		} catch (Exception e) {
+        		System.out.println("\n".repeat(50));  // Fallback básico
+    		}
 	}
 }

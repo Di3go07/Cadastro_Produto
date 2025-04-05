@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.exemplo.Model.Menu;
 import com.exemplo.Model.Produto;
 import com.exemplo.Service.GerenciamentoProdutos;
 import com.exemplo.Query.ArmazenamentoProdutos;
@@ -23,33 +24,23 @@ public class Main {
 				username, password)) {
 			conn.setAutoCommit(false);
 			System.out.println("Conexão estabelecida com sucesso!");
+			try{Thread.sleep(2000);} catch(Exception erro){}
 
 			//RESGATANDO PRODUTOS DO BANCO
-			ArmazenamentoProdutos querys = new ArmazenamentoProdutos(); //instancia a classe com as querys
+			ArmazenamentoProdutos querys = new ArmazenamentoProdutos();
 			GerenciamentoProdutos gerencia = new GerenciamentoProdutos();
 			querys.carregaEstoque(gerencia);
+			querys.limparTerminal();
+			System.out.println("Banco de dados preparado");
+                        try{Thread.sleep(2000);} catch(Exception erro){}
 
-			//CRIANDO UM PRODUTO
-			///Produto produto = new Produto("SSD Kingston", 38.0, 16);
+			//MENU
+			Menu menu = new Menu(gerencia, querys);
+			menu.exibir();
 
-			//produto.diminuirQuantidade(20);
-			//produto.diminuirQuantidade(2);
-
-                	Produto produto2 = new Produto("Samsung", 1229.99, 18);
-
-			//GERENCIAR PRODUTOS
-			///gerencia.listarProdutos();
-			///gerencia.cadastrarProduto(produto);
-                	///gerencia.cadastrarProduto(produto2);
-
-			//MANIPULAR O BANCO
-			querys.salvarProdutos(gerencia); //passa a lista de produtos criada e chama a função para salva-los
-
-			///querys.excluirProduto(3);
-
+			conn.close();
 		} catch (SQLException ex) {
                         System.err.println("Erro na conexão com o banco: " + ex.getMessage());
-                }
-
+                } 
 	}
 }
