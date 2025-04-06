@@ -133,12 +133,15 @@ Para se conectar é necessário passar informações pessoais para a API de cone
 Como iniciar a aplicação 
 
 1. No terminal, acesse o dirétorio raiz do projeto
-2. Caso tenha escolhido popular o banco, rode o código python 
-3. Compile os códigos
+2. Caso tenha escolhido popular o banco, rode o código python
+   ```
+   
+   ```
+4. Compile os códigos
    ```
     mvn compile
    ```
-4. Inicie o arquivo da Main
+5. Inicie o arquivo da Main
    ```
    mvn exec:java -Dexec.mainClass="com.exemplo.Main"
    ```
