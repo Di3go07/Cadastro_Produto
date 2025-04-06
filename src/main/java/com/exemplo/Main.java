@@ -15,32 +15,50 @@ import java.util.ArrayList;
 
 public class Main {
 	public static void main(String[] args){
-		//CONECTANDO AO BANCO
-		String username = "Diego";
-		String password = "@Galo2013";
+		//INSTÂNCIAS
+		ArmazenamentoProdutos querys = new ArmazenamentoProdutos();
+		GerenciamentoProdutos gerencia = new GerenciamentoProdutos();
 
-		try (Connection conn = DriverManager
-			.getConnection("jdbc:mysql://localhost/Cadastro_Produto?serverTimezone=UTC",
-				username, password)) {
-			conn.setAutoCommit(false);
+		Connection conn = null;
+		try{
+			//CONECTANDO AO BANCO
+                	conn = querys.conectarAoBanco();
+                	conn.setAutoCommit(false);
+
 			System.out.println("Conexão estabelecida com sucesso!");
 			try{Thread.sleep(2000);} catch(Exception erro){}
 
 			//RESGATANDO PRODUTOS DO BANCO
-			ArmazenamentoProdutos querys = new ArmazenamentoProdutos();
-			GerenciamentoProdutos gerencia = new GerenciamentoProdutos();
 			querys.carregaEstoque(gerencia);
 			querys.limparTerminal();
 			System.out.println("Banco de dados preparado");
-                        try{Thread.sleep(2000);} catch(Exception erro){}
+                	try{Thread.sleep(2000);} catch(Exception erro){}
 
 			//MENU
 			Menu menu = new Menu(gerencia, querys);
 			menu.exibir();
 
-			conn.close();
 		} catch (SQLException ex) {
                         System.err.println("Erro na conexão com o banco: " + ex.getMessage());
-                } 
+                } finally {
+			if (conn != null) {
+            			try {
+					conn.setAutoCommit(true);
+					conn.close();
+
+                			DriverManager.drivers().forEach(driver -> {
+                				try {
+                    					DriverManager.deregisterDriver(driver);
+                				} catch (SQLException e) {
+                    					System.err.println("Erro ao deregistrar driver: " + e.getMessage());
+                				}
+            				});
+
+					System.out.println("Conexão fechada com sucesso.");
+				} catch (SQLException e) {
+             	   			System.err.println("Erro ao fechar conexão: " + e.getMessage());
+            			}
+			}
+		}
 	}
 }

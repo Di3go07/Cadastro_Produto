@@ -73,7 +73,9 @@
         		<includes>
           			<include>**/*Test.java</include>  <!-- Garante que o Maven encontre todas as classes que terminam com Test -->
        			 </includes>
-     		 </configuration>
+       			<mainClass>com.test.Startup</mainClass>
+       			<cleanupDaemonThreads>false</cleanupDaemonThreads>
+		</configuration>
     	     </plugin>
 	             <plugin>
             		<groupId>org.apache.maven.plugins</groupId>

@@ -14,9 +14,11 @@ public class GerenciamentoProdutos{
 
 	//GETTERS E SETTERS
 	public void cadastrarProduto(Produto produto){
+		//recebe uma instância de Produto e a adiciona na lista de produtos
 		this.produtos.add(produto);
 	}
 	public void listarProdutos(){
+		//imprime todos os itens armazenados na lista
 		System.out.println("PRODUTOS DISPONÍVEIS");
 		int contador = 1;
 		for(Produto produto : this.produtos){
@@ -26,6 +28,7 @@ public class GerenciamentoProdutos{
 		}
 	}
 	public ArrayList<Produto> getProdutos(){
+		//retorna a lista
 		return this.produtos;
 	}
 }

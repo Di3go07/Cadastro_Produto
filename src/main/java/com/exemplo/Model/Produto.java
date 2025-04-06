@@ -2,12 +2,14 @@ package com.exemplo.Model;
 
 public class Produto {
 	//VARIÁVEIS
+	private int id;
 	private String nome;
 	private double preco;
 	private int quantidadeEmEstoque;
 
 	//CONSTRUTOR
-	public Produto(String nome, double preco, int quantidadeEmEstoque){
+	public Produto(int id, String nome, double preco, int quantidadeEmEstoque){
+		this.id = id;
 		this.nome = nome;
 		this.preco = preco;
 		this.quantidadeEmEstoque = quantidadeEmEstoque;
@@ -20,7 +22,12 @@ public class Produto {
 	public void setNome(String nome){
 		this.nome = nome;
 	}
-
+	public int getId(){
+		return this.id;
+	}
+	public void setId(int Id){
+		this.id = id;
+	}
 	public double getPreco(){
 		return this.preco;
 	}
@@ -52,7 +59,8 @@ public class Produto {
 
 	@Override
 	public String toString(){
-		return "Produto: " + nome + "\n" +
+		return "ID: " + id + "\n" +
+		"Produto: " + nome + "\n" +
 		"Preço: " + formartarPreco() + "\n" +
 		"Quantidade disponível: " + quantidadeEmEstoque;
 	}

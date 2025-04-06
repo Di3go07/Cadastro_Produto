@@ -18,7 +18,7 @@ public class ArmazenamentoProdutos{
 	//MÉTODOS
 	public Connection conectarAoBanco() throws SQLException {
 		//método para conectar ao banco de dados do projeto
-		String url = "jdbc:mysql://localhost/Cadastro_Produto?serverTimezone=UTC";
+		String url = "jdbc:mysql://localhost/Cadastro_Produto?serverTimezone=UTC&threadCleanup=false";
 		String user = "Diego";
                 String password = "@Galo2013";
 
@@ -33,8 +33,8 @@ public class ArmazenamentoProdutos{
 
 		PreparedStatement verificationStmt = conn.prepareStatement("SELECT COUNT(*) FROM produto WHERE nome = ?");
 		int insertedRows = 0;
-		for(Produto i : gerencia.getProdutos()){
-   			verificationStmt.setString(1, i.getNome());
+		for(Produto i : gerencia.getProdutos()){ //resgata o nome do produto na lista e verifica se ele já está no banco
+   			verificationStmt.setString(1, i.getNome()); //passa no SELECT o nome resgatado para ver se suas aparições são igual a 0
 			ResultSet rs = verificationStmt.executeQuery();
 
 			if(rs.next() && rs.getInt(1) == 0) { //verifica se o resultado, rs, armazenado pela query de SELECT retornou 0 na busca pelo produto
@@ -44,7 +44,7 @@ public class ArmazenamentoProdutos{
             				insertStmt.setString(1, i.getNome());
             				insertStmt.setDouble(2, i.getPreco());
             				insertStmt.setInt(3, i.getQuantidade());
-					insertStmt.executeUpdate();
+					insertStmt.executeUpdate(); //finaliza a operação de Insert de um novo produto na tabela
 				} catch (SQLException ex) {
 					System.out.println("Erro ao adicionar produto no banco");
 				}
@@ -68,14 +68,44 @@ public class ArmazenamentoProdutos{
 		PreparedStatement selectionAll = conn.prepareStatement("SELECT * FROM produto");
 		ResultSet rs = selectionAll.executeQuery();
 
-		while (rs.next()) {
+		while (rs.next()) { //para cada item da tabela, é criado uma instância de Produto para adicionar à lista
+			//dados do item
+			int id = rs.getInt("id");
 			String Nome = rs.getString("nome");
 			double Preco = rs.getDouble("preco");
 			int Estoque = rs.getInt("quantidadeEstoque");
 
-			Produto produto = new Produto(Nome, Preco, Estoque);
+			Produto produto = new Produto(id, Nome, Preco, Estoque);
 			gerencia.cadastrarProduto(produto);
 		}
+	}
+
+	public void buscarProduto(int id) throws SQLException{
+		//O méotodo recebe um id e retorna as informações do produto
+		Connection conn = null;
+                conn = this.conectarAoBanco();
+                conn.setAutoCommit(false);
+                PreparedStatement resetID = null;
+
+                try {
+			PreparedStatement buscarProduto = conn.prepareStatement("SELECT * FROM produto WHERE id = ?");
+                        buscarProduto.setInt(1, id);
+                        ResultSet rs = buscarProduto.executeQuery(); //verifica se existe um produto com o id no banco
+                        if (rs.next()) {
+                                System.out.println("Nome: " + rs.getString("nome") + "\n" +
+						    "Preço: " + rs.getString("preco") + "\n" +
+						    "Quantidade disponível: " + rs.getString("quantidadeEstoque")
+				);
+                        }else{
+                        	System.out.println("Produto com ID " + id + " não encontrado! Consulte a lista de produtos.");
+                        }
+
+
+		}catch (SQLException e) {
+                        if (conn != null) {
+                                conn.rollback();
+                        }
+                }
 	}
 
 	public void excluirProduto(int id) throws SQLException{
@@ -83,59 +113,92 @@ public class ArmazenamentoProdutos{
 		Connection conn = null;
                 conn = this.conectarAoBanco();
                 conn.setAutoCommit(false);
-    		PreparedStatement resetID = null;
+		PreparedStatement buscarProduto = null;
+		ResultSet rs = null;
 
 		try {
-			PreparedStatement buscarProduto = conn.prepareStatement("SELECT * FROM produto WHERE id = ?");
+			buscarProduto = conn.prepareStatement("SELECT * FROM produto WHERE id = ?");
 			buscarProduto.setInt(1, id);
-			ResultSet rs = buscarProduto.executeQuery();
-			if (rs.next()) {
+			rs = buscarProduto.executeQuery(); //verifica se o id existe no banco
+
+			//ações para caso exista ou não o registro do id passado
+			if (!rs.next()) { //não existe
+                        	System.out.println("Produto com ID " + id + " não encontrado");
+                                return; //sai do método
+                        } else { //existe
         			System.out.println("Deletando o produto " + rs.getString("nome") + "...");
     			}
-			rs.close();
-			buscarProduto.close();
 
 			PreparedStatement excluirProduto = conn.prepareStatement("DELETE FROM produto WHERE id = ?");
 			excluirProduto.setInt(1, id);
 			excluirProduto.executeUpdate();
+			excluirProduto.close();
 
-			//redefinir ids
-			System.out.println("Redefinindo IDs...");
-        		resetID = conn.prepareStatement("SET @count = 0;");
-        		resetID.executeUpdate();
-
-        		resetID = conn.prepareStatement("UPDATE produto SET id = @count := @count + 1;");
-        		resetID.executeUpdate();
-
-        		resetID = conn.prepareStatement("ALTER TABLE produto AUTO_INCREMENT = 1;");
-        		resetID.executeUpdate();
-
-        		conn.commit();
-        		System.out.println("Produto removido e IDs redefinidos!");
 		} catch (SQLException e) {
-            		conn.rollback();
-		}finally {
-			System.out.println("saindo...");
-        		if (resetID != null) resetID.close();
-			if (conn != null) conn.close();
-		}
+    			if (conn != null) {
+        			try {
+            				conn.rollback();
+        			} catch (SQLException ex) {
+            				System.err.println("Erro ao fazer rollback: " + ex.getMessage());
+        			}
+    			}
+    			throw e;
+		}finally{
+			if (rs != null) {
+        			try {
+            				rs.close();
+        			} catch (SQLException e) {
+            				System.err.println("Erro ao fechar ResultSet: " + e.getMessage());
+        			}
+			}
+    			if (buscarProduto != null) {
+        			try {
+            				buscarProduto.close();
+        			} catch (SQLException e) {
+			        	System.err.println("Erro ao fechar PreparedStatement: " + e.getMessage());
+        			}
+    			}
+    			if (conn != null) {
+        			try {
+            				if (!conn.getAutoCommit()) {
+                				conn.setAutoCommit(true);
+            				}
+            				conn.close();
+        			} catch (SQLException e) {
+            				System.err.println("Erro ao fechar Connection: " + e.getMessage());
+        			}
+			}
+    		}
 	}
 
 	public void editarProduto(int id) throws SQLException{
-                Connection conn = null;
-                conn = this.conectarAoBanco();
-                conn.setAutoCommit(false);
-
+                //O método recebe um id e permite o usuário informar novos valores para seus campos na tabela
+		Connection conn = null;
 	    	Scanner sc = new Scanner(System.in);
 
                 try {
+	                conn = this.conectarAoBanco();
+                	conn.setAutoCommit(false);
+
+			//try usado para verificar se o id está registrado
+			try (PreparedStatement verificaExistencia = conn.prepareStatement("SELECT * FROM produto WHERE id = ?")) {
+            			verificaExistencia.setInt(1, id);
+            			try (ResultSet rs = verificaExistencia.executeQuery()) {
+                			if (!rs.next()) {
+                    				System.out.println("Produto com ID " + id + " não encontrado");
+                				return;
+					}
+            			}
+        		}
+
 			System.out.println("Novo nome: ");
 			String novoNome = sc.nextLine();
-                        System.out.println("Novo preço: ");
+                	System.out.println("Novo preço: ");
 			Double novoPreco = Double.parseDouble(sc.nextLine());
-                        System.out.println("Nova quantidade: ");
+                	System.out.println("Nova quantidade: ");
 			int novaQuantidade = Integer.parseInt(sc.nextLine());
 
+			//Editando as informações do produto com os novos valores recebidos
 			PreparedStatement editarProduto = conn.prepareStatement("UPDATE produto SET nome=?, preco=?, quantidadeEstoque=? WHERE id=?");
 			editarProduto.setString(1, novoNome);
 			editarProduto.setDouble(2, novoPreco);
@@ -145,16 +208,20 @@ public class ArmazenamentoProdutos{
 			conn.commit();
 
 			System.out.println("Produto editado!");
-	                conn.close();
 
 		}catch (SQLException e) {
-			System.out.println("O ID não foi encontrado!Consute a lista de produtos para verificar o id do produto");
                 	if (conn != null) {
            	 		conn.rollback();
         		}
-		}
+                }finally{
+			if (conn != null) {
+                                conn.close();
+                        }
+                }
+
 	}
 	public void limparTerminal() {
+		//méotodo acionado quando é necessário limpar o terminal
 		try {
         		if (System.getProperty("os.name").contains("Windows")) {
             			new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -164,6 +231,6 @@ public class ArmazenamentoProdutos{
         		}
     		} catch (Exception e) {
         		System.out.println("\n".repeat(50));  // Fallback básico
-    		}
+		}
 	}
 }
