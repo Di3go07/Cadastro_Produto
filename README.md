@@ -132,10 +132,10 @@ Para se conectar é necessário passar informações pessoais para a API de cone
 ## 🟢 Inicialização
 Como iniciar a aplicação 
 
-1. No terminal, acesse o dirétorio raiz do projeto
+1. No terminal, acesse o dirétorio raiz do projeto (Cadastro_Produto)
 2. Caso tenha escolhido popular o banco, rode o código python
    ```
-   
+   python3 ./PopularBD/script/popularBD.py
    ```
 4. Compile os códigos
    ```
