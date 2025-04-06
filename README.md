@@ -83,7 +83,7 @@ Conheça a estrutura do projeto
 ##  🔴 Pré-requisitos 
 Itens que você precisa antes de rodar o código:
 
-* MVN instalado na máquina
+* **MVN instalado na máquina**
  
   No terminal, confira se já está instalado:
    ```
@@ -91,7 +91,7 @@ Itens que você precisa antes de rodar o código:
    ```
   Caso não esteja, faça o download [aqui](https://maven.apache.org/download.cgi)
 
-* Banco de dados criado
+* **Banco de dados criado**
   
   É necessário já ter um banco de dados criado, para isso, abra o mysql no terminal:
   ```
@@ -109,7 +109,7 @@ Itens que você precisa antes de rodar o código:
                         preco double NOT NULL,
                         quantidadeEstoque INT);
   ```
-* Popular Banco [opcional]
+* **Popular Banco [opcional]**
   
   Caso deseje popular o banco de dados, no terminal, copie os comandos seguintes
 
