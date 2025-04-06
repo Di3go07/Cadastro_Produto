@@ -55,6 +55,28 @@ direction TB
 
 **Menu -** a classe Model da interface feita para o usuário se comunicar com a aplicação e realizar as alterações no banco
 
+## 🛠️ Estrutura
+Conheça a estrutura do projeto
+
+```
+📦Cadastro_Produto
+├─📂 src
+│ └─📂 main
+│   └─📂 java
+│      └─📂 com
+│         └─📂 exemplo
+│            ├─📄 Main.java
+│            ├─📂 Model
+│            │  ├─📄 Menu.java
+│            │  └─📄 Produto.java
+│            ├─📂 Querys
+│            │  └─📄 ArmazenamentoProdutos.java
+│            └─📂 Service
+│               └─📄 GerenciamentoProdutos.java
+├─📄 pom.xml
+└─📄 dados_banco.json
+```
+
 ##  🔴 Pré-requisitos 
 Itens que você precisa antes de rodar o código:
 
@@ -84,10 +106,15 @@ Itens que você precisa antes de rodar o código:
                         preco double NOT NULL,
                         quantidadeEstoque INT);
   ```
+* Popular Banco [opcional]
+  Caso deseje popular o banco de dados, baixe a biblioteca python:
+
+  ```
+  pip install mysql-connector-python
+  ```
 
 ## 🟡 Autorização do banco de dados
-Para se conectar é necessário passar informações pessoais para a API de conexão. Por isso, cada usuário deve criar um arquivo "dados_banco.json" no dirétorio raiz
-do projeto como o exemplo seguite, mas mudando as informações exigidas.
+Para se conectar é necessário passar informações pessoais para a API de conexão. Por isso, cada usuário deve criar um arquivo "dados_banco.json" no dirétorio raiz do projeto como o exemplo seguite, mas mudando as informações exigidas.
 
 ```
 {
@@ -100,11 +127,19 @@ do projeto como o exemplo seguite, mas mudando as informações exigidas.
 Como iniciar a aplicação 
 
 1. No terminal, acesse o dirétorio raiz do projeto
-2. Compile os códigos
+2. Caso tenha escolhido popular o banco, rode o código python 
+3. Compile os códigos
    ```
     mvn compile
    ```
-3. Inicie o arquivo da Main
+4. Inicie o arquivo da Main
    ```
    mvn exec:java -Dexec.mainClass="com.exemplo.Main"
    ```
+   
+## 👨‍💻 Desenvolvedor
+Responsável pela criação do projeto
+
+Diego - Programação e documentação <br>
+Email: diego.dpab@gmail.com <br>
+Conheça mais acessando o GitHub do desenvolvedor [aqui](https://github.com/Di3go07)!
