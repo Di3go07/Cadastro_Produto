@@ -74,8 +74,8 @@ Conheça a estrutura do projeto
 │            └─📂 Service
 │               └─📄 GerenciamentoProdutos.java
 ├─📂 PopularBD
-  └─📂 script
-    └─📄 popularBD.py 
+│ └─📂 script
+│   └─📄 popularBD.py 
 ├─📄 pom.xml
 └─📄 dados_banco.json
 ```
