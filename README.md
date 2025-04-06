@@ -73,6 +73,9 @@ Conheça a estrutura do projeto
 │            │  └─📄 ArmazenamentoProdutos.java
 │            └─📂 Service
 │               └─📄 GerenciamentoProdutos.java
+├─📂 PopularBD
+  └─📂 script
+    └─📄 popularBD.py 
 ├─📄 pom.xml
 └─📄 dados_banco.json
 ```
@@ -108,9 +111,11 @@ Itens que você precisa antes de rodar o código:
   ```
 * Popular Banco [opcional]
   
-  Caso deseje popular o banco de dados, baixe a biblioteca python:
+  Caso deseje popular o banco de dados, no terminal, copie os comandos seguintes
 
   ```
+  python -m venv meu_ambiente_virtual
+  source ./meu_ambiente_virtual/bin/activate
   pip install mysql-connector-python
   ```
 
