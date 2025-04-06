@@ -8,6 +8,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Scanner;
 import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import java.nio.file.Paths;
 
 import com.exemplo.Model.Produto;
 import com.exemplo.Service.GerenciamentoProdutos;
@@ -16,11 +22,34 @@ import java.util.ArrayList;
 
 public class ArmazenamentoProdutos{
 	//MÉTODOS
-	public Connection conectarAoBanco() throws SQLException {
+	public Connection conectarAoBanco() throws SQLException{
 		//método para conectar ao banco de dados do projeto
-		String url = "jdbc:mysql://localhost/Cadastro_Produto?serverTimezone=UTC&threadCleanup=false";
-		String user = "Diego";
-                String password = "@Galo2013";
+		Connection conn = null;
+
+		//lendo JSON com as informações do banco
+		JSONObject jsonObject;
+		JSONParser parser = new JSONParser();
+		String url = null;
+		String user = null;
+		String password = null;
+
+		try {
+			String path = Paths.get("dados_banco.json").toAbsolutePath().toString();
+			jsonObject = (JSONObject) parser.parse(new FileReader(path));
+			url = (String) jsonObject.get("url");
+			user = (String) jsonObject.get("user");
+			password = (String) jsonObject.get("password");
+
+ 		} catch (FileNotFoundException e) {
+     		   	System.err.println("Arquivo JSON não encontrado!");
+        		e.printStackTrace();
+    		} catch (IOException | ParseException e) {
+                        System.err.println("Erro ao ler o JSON: " + e.getMessage());
+		}
+
+		if (url == null || user == null || password == null) {
+        		throw new SQLException("Dados de conexão inválidos. URL, usuário ou senha estão nulos.");
+    		}
 
 		return DriverManager.getConnection(url, user, password);
 	}
