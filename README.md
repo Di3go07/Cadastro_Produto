@@ -107,6 +107,7 @@ Itens que você precisa antes de rodar o código:
                         quantidadeEstoque INT);
   ```
 * Popular Banco [opcional]
+  
   Caso deseje popular o banco de dados, baixe a biblioteca python:
 
   ```
