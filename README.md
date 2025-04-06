@@ -1,9 +1,9 @@
 # Controle de inventário
 
 ## 📋 Apresentação
-O projeto "Cadastro_Produto" tem como objetivo desenvolver, utilizando a linguagem Java focada em Orientação em Objetos, um aplicação que se aplique no mundo real 
-por permitir lojas administrarem seus estoques. A aplicação entra em contato com um banco de dados e permite o usuário realizar todas as interações do CRUD, isto é,
-criar produtos, ler as informações, editar informações e excluir.
+O projeto "Cadastro_Produto" tem como objetivo desenvolver, utilizando a linguagem Java focada em Orientação em Objetos, um aplicação que se aplique no mundo real por permitir lojas administrarem seus estoques. 
+
+A aplicação entra em contato com um banco de dados e permite o usuário realizar todas as interações do CRUD, isto é,criar produtos, ler as informações, editar informações e excluir.
 
 ## ⚙️ Diagrama de classes
 Entenda como foi feita a organização do projeto e como se dá a relação dos objetos 
